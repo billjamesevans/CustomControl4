@@ -4,7 +4,7 @@ from .account import Account
 from .director import Director
 from .websocket import WebSocketClient
 from .error_handling import Control4Error
-from .devices import Light, Relay, Room
+from .devices import Light, Relay, Room   # Ensure 'Room' is included here
 
 __all__ = [
     "Account",
