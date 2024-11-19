@@ -12,7 +12,7 @@ CONTROLLER_AUTHORIZATION_ENDPOINT = (
     "https://apis.control4.com/authentication/v1/rest/authorization"
 )
 GET_CONTROLLERS_ENDPOINT = "https://apis.control4.com/account/v3/rest/accounts"
-APPLICATION_KEY = "your_application_key_here"  # Replace with your application key
+APPLICATION_KEY = "78f6791373d61bea49fdb9fb8897f1f3af193f11"  # Updated Application Key
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -55,11 +55,13 @@ class Account:
                 text = await response.text()
                 await check_response_for_error(text)
                 json_data = json.loads(text)
+                _LOGGER.debug(f"Authentication response: {json_data}")  # Added debug log
                 try:
                     self.account_bearer_token = json_data["authToken"]["token"]
                     _LOGGER.info("Account authenticated successfully.")
                 except KeyError:
                     _LOGGER.error("Authentication failed.")
+                    _LOGGER.error(f"Response received: {json_data}")  # Added error log
                     raise Exception("Authentication failed.")
 
     async def get_controllers(self):
@@ -98,12 +100,14 @@ class Account:
                 text = await response.text()
                 await check_response_for_error(text)
                 json_data = json.loads(text)
+                _LOGGER.debug(f"Director token response: {json_data}")  # Added debug log
                 try:
                     director_token = json_data["authToken"]["token"]
                     _LOGGER.info("Director token retrieved successfully.")
                     return director_token
                 except KeyError:
                     _LOGGER.error("Failed to retrieve director token.")
+                    _LOGGER.error(f"Response received: {json_data}")  # Added error log
                     raise Exception("Failed to retrieve director token.")
 
     async def close(self):
