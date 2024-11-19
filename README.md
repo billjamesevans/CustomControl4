@@ -1,26 +1,16 @@
-# PyControl4
-A Python library for controlling and automating Control4 smart home systems.
+# customControl4
 
-## Overview
-PyControl4 provides an easy-to-use interface for developers and enthusiasts to interact with Control4 controllers. With PyControl4, you can query device statuses, control devices, and build custom automations for your smart home.
+An improved Python library for interacting with Control4 systems.
 
-### Features
-- **Device Discovery:** Retrieve information about all controllable devices, including names, IDs, and statuses.
-- **Action Triggering:** Control devices such as lights, blinds, thermostats, and more.
-- **State Querying:** Monitor the state of your home automation system.
-- **Extensibility:** Integrate with other Python-based systems or workflows.
-- **Ease of Use:** Straightforward setup and clear documentation for beginners and experts alike.
+## Features
 
----
+- Asynchronous API calls using `aiohttp`
+- Modular design for different device types (lights, relays, rooms, etc.)
+- WebSocket support for real-time updates
+- Custom error handling
+- Easy-to-use classes for account authentication and director communication
 
-## Getting Started
+## Installation
 
-### Prerequisites
-- A Control4 system with API access enabled.
-- Python 3.7 or higher installed on your machine.
-- Network access to the Control4 controller.
-
-### Installation
-You can install PyControl4 via pip:
 ```bash
-pip install pycontrol4
+pip install -e .

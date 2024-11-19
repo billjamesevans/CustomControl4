@@ -1,11 +1,11 @@
 # examples/example_usage.py
 
 import asyncio
-from pyControl4 import Account, Director, Light
+from customControl4 import Account, Director, Light
 
 async def main():
     # Create an account instance and authenticate
-    account = Account("username", "password")
+    account = Account("your_username", "your_password")
     await account.authenticate()
 
     # Get controllers and select one
@@ -20,10 +20,6 @@ async def main():
 
     # Initialize Director instance
     director = Director("192.168.1.25", director_token)
-
-    # Get all items
-    items = await director.get_all_items()
-    print("Items:", items)
 
     # Control a light
     light = Light(director, item_id=253)
