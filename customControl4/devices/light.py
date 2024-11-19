@@ -10,7 +10,6 @@ class Light:
 
     async def get_state(self):
         item_info = await self.director.get_item_info(self.item_id)
-        # Adjust based on actual API response structure
         state = item_info.get("properties", {}).get("value", None)
         return state
 

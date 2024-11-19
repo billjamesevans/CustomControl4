@@ -4,6 +4,7 @@ import aiohttp
 import async_timeout
 import json
 import logging
+import ssl
 
 from .error_handling import check_response_for_error
 
@@ -18,6 +19,11 @@ class Director:
         self.session = session
         self.base_url = f"https://{ip}/api/v1"
 
+        # Create SSL context to ignore certificate verification
+        self.ssl_context = ssl.create_default_context()
+        self.ssl_context.check_hostname = False
+        self.ssl_context.verify_mode = ssl.CERT_NONE
+
     async def send_get_request(self, endpoint):
         """Sends a GET request to the specified endpoint."""
         headers = {"Authorization": f"Bearer {self.director_token}"}
@@ -26,11 +32,15 @@ class Director:
         if self.session is None:
             self.session = aiohttp.ClientSession()
 
-        async with async_timeout.timeout(10):
-            async with self.session.get(url, headers=headers, ssl=False) as response:
-                text = await response.text()
-                await check_response_for_error(text)
-                return text
+        async with async_timeout.timeout(30):  # Increased timeout
+            try:
+                async with self.session.get(url, headers=headers, ssl=self.ssl_context) as response:
+                    text = await response.text()
+                    await check_response_for_error(text)
+                    return text
+            except Exception as e:
+                _LOGGER.error(f"GET request failed: {e}")
+                raise
 
     async def send_post_request(self, endpoint, command, params=None):
         """Sends a POST request with a command to the specified endpoint."""
@@ -43,19 +53,31 @@ class Director:
         if self.session is None:
             self.session = aiohttp.ClientSession()
 
-        async with async_timeout.timeout(10):
-            async with self.session.post(
-                url, headers=headers, json=data, ssl=False
-            ) as response:
-                text = await response.text()
-                await check_response_for_error(text)
-                return text
+        async with async_timeout.timeout(30):  # Increased timeout
+            try:
+                async with self.session.post(
+                    url, headers=headers, json=data, ssl=self.ssl_context
+                ) as response:
+                    text = await response.text()
+                    await check_response_for_error(text)
+                    return text
+            except Exception as e:
+                _LOGGER.error(f"POST request failed: {e}")
+                raise
 
-    async def get_all_items(self):
-        """Retrieves all items from the Director."""
-        response = await self.send_get_request("/items")
-        json_data = json.loads(response)
-        return json_data.get("items", [])
+    async def get_all_items(self, limit=50, offset=0):
+        """Retrieves all items from the Director in batches."""
+        all_items = []
+        while True:
+            endpoint = f"/items?limit={limit}&offset={offset}"
+            response = await self.send_get_request(endpoint)
+            json_data = json.loads(response)
+            items = json_data.get("items", [])
+            if not items:
+                break
+            all_items.extend(items)
+            offset += limit
+        return all_items
 
     async def get_item_info(self, item_id):
         """Retrieves information about a specific item."""

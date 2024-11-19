@@ -55,13 +55,13 @@ class Account:
                 text = await response.text()
                 await check_response_for_error(text)
                 json_data = json.loads(text)
-                _LOGGER.debug(f"Authentication response: {json_data}")  # Added debug log
+                _LOGGER.debug(f"Authentication response: {json_data}")
                 try:
                     self.account_bearer_token = json_data["authToken"]["token"]
                     _LOGGER.info("Account authenticated successfully.")
                 except KeyError:
                     _LOGGER.error("Authentication failed.")
-                    _LOGGER.error(f"Response received: {json_data}")  # Added error log
+                    _LOGGER.error(f"Response received: {json_data}")
                     raise Exception("Authentication failed.")
 
     async def get_controllers(self):
@@ -100,14 +100,14 @@ class Account:
                 text = await response.text()
                 await check_response_for_error(text)
                 json_data = json.loads(text)
-                _LOGGER.debug(f"Director token response: {json_data}")  # Added debug log
+                _LOGGER.debug(f"Director token response: {json_data}")
                 try:
                     director_token = json_data["authToken"]["token"]
                     _LOGGER.info("Director token retrieved successfully.")
                     return director_token
                 except KeyError:
                     _LOGGER.error("Failed to retrieve director token.")
-                    _LOGGER.error(f"Response received: {json_data}")  # Added error log
+                    _LOGGER.error(f"Response received: {json_data}")
                     raise Exception("Failed to retrieve director token.")
 
     async def close(self):

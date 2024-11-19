@@ -5,17 +5,22 @@ import logging
 
 _LOGGER = logging.getLogger(__name__)
 
+
 class Control4Error(Exception):
     """Base exception class for Control4 errors."""
+
 
 class AuthenticationError(Control4Error):
     """Exception raised for authentication errors."""
 
+
 class DirectorCommunicationError(Control4Error):
     """Exception raised for Director communication errors."""
 
+
 class DeviceOperationError(Control4Error):
     """Exception raised for device operation errors."""
+
 
 async def check_response_for_error(response_text):
     try:
