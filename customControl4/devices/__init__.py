@@ -2,6 +2,6 @@
 
 from .light import Light
 from .relay import Relay
-from .room import Room   # Ensure this line exists
+from .room import Room
 
 __all__ = ["Light", "Relay", "Room"]
