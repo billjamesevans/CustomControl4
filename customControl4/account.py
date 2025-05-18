@@ -4,6 +4,7 @@ import aiohttp
 import async_timeout
 import json
 import logging
+import os
 
 from .error_handling import check_response_for_error
 
@@ -12,17 +13,46 @@ CONTROLLER_AUTHORIZATION_ENDPOINT = (
     "https://apis.control4.com/authentication/v1/rest/authorization"
 )
 GET_CONTROLLERS_ENDPOINT = "https://apis.control4.com/account/v3/rest/accounts"
-APPLICATION_KEY = "78f6791373d61bea49fdb9fb8897f1f3af193f11"  # Updated Application Key
+
+# Default application key used if none is provided via constructor or environment
+DEFAULT_APPLICATION_KEY = "78f6791373d61bea49fdb9fb8897f1f3af193f11"
+# Environment variable name that can override the default application key
+APPLICATION_KEY_ENV_VAR = "CONTROL4_APPLICATION_KEY"
 
 _LOGGER = logging.getLogger(__name__)
 
 
 class Account:
-    def __init__(self, username, password, session: aiohttp.ClientSession = None):
-        """Creates a Control4 account object."""
+    def __init__(
+        self,
+        username,
+        password,
+        session: aiohttp.ClientSession = None,
+        application_key: str | None = None,
+    ):
+        """Creates a Control4 account object.
+
+        Parameters
+        ----------
+        username: str
+            The Control4 account username.
+        password: str
+            The Control4 account password.
+        session: aiohttp.ClientSession, optional
+            Existing session to use for HTTP requests.
+        application_key: str, optional
+            Custom application key used for authentication. If not provided,
+            the environment variable ``CONTROL4_APPLICATION_KEY`` is checked
+            before falling back to the default key bundled with the library.
+        """
         self.username = username
         self.password = password
         self.session = session
+        self.application_key = (
+            application_key
+            or os.getenv(APPLICATION_KEY_ENV_VAR)
+            or DEFAULT_APPLICATION_KEY
+        )
         self.account_bearer_token = None
 
     async def authenticate(self):
@@ -38,7 +68,7 @@ class Account:
                     "osVersion": "3.x",
                 },
                 "userInfo": {
-                    "applicationKey": APPLICATION_KEY,
+                    "applicationKey": self.application_key,
                     "password": self.password,
                     "userName": self.username,
                 },
