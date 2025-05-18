@@ -78,7 +78,9 @@ class Account:
                 text = await response.text()
                 await check_response_for_error(text)
                 json_data = json.loads(text)
-                return json_data.get("account", {})
+                account_info = json_data.get("account", {})
+                controllers = account_info.get("controllers", [])
+                return controllers
 
     async def get_director_token(self, controller_common_name):
         """Retrieves a director bearer token for local communication with the controller."""

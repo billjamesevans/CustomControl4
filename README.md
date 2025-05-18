@@ -14,3 +14,10 @@ An improved Python library for interacting with Control4 systems.
 
 ```bash
 pip install -e .
+```
+
+## Usage
+
+See `examples/example_usage.py` for a complete example of authenticating and
+controlling a light.  Make sure the package dependencies are installed and
+replace the placeholder credentials with your own Control4 account details.
