@@ -14,3 +14,9 @@ An improved Python library for interacting with Control4 systems.
 
 ```bash
 pip install -e .
+pip install -r requirements.txt
+```
+
+## Usage
+
+See [examples/example_usage.py](examples/example_usage.py) for a basic script that authenticates and toggles a light.
