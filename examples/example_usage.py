@@ -10,10 +10,10 @@ async def main():
 
     # Get controllers and select one
     controllers = await account.get_controllers()
-    controller_name = controllers.get("controllerCommonName")
-    if not controller_name:
+    if not controllers:
         print("No controllers found.")
         return
+    controller_name = controllers[0].get("controllerCommonName")
 
     # Get director token
     director_token = await account.get_director_token(controller_name)
